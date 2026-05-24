@@ -16,6 +16,10 @@ from app.api.ask_rag import (
     router as ask_rag_router
 )
 
+from app.api.ask_agent import (
+    router as ask_agent_router
+)
+
 from app.config.settings import (
     settings
 )
@@ -52,6 +56,11 @@ app.include_router(
     tags=["RAG"]
 )
 
+app.include_router(
+    ask_agent_router,
+    prefix=settings.API_V1,
+    tags=["Agentic AI"]
+)
 
 @app.get("/")
 async def root():

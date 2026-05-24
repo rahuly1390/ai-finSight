@@ -25,3 +25,5 @@ pymupdf
 pypdf
 tiktoken
 httpx==0.28.1
+streamlit
+requests
