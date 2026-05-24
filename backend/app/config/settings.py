@@ -1,22 +1,35 @@
-from pydantic_settings import BaseSettings
-from pathlib import Path
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict
+)
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+class Settings(
+    BaseSettings
+):
 
+    PROJECT_NAME: str = (
+        "FinSight AI"
+    )
 
-class Settings(BaseSettings):
+    API_V1: str = (
+        "/api/v1"
+    )
 
-    PROJECT_NAME: str
-    API_V1: str
+    DATABASE_URL: str = (
+        "sqlite:///./finsight.db"
+    )
 
-    DATABASE_URL: str | None = None
-    OPENAI_API_KEY: str
+    OPENAI_API_KEY: str = (
+        "dummy-key"
+    )
 
-    model_config = {
-        "env_file": BASE_DIR / ".env",
-        "extra": "ignore"
-    }
+    model_config = (
+        SettingsConfigDict(
+            env_file=".env",
+            extra="ignore"
+        )
+    )
 
 
 settings = Settings()
