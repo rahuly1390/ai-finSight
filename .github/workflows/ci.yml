@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  backend-build:
+  build-and-push:
 
     runs-on: ubuntu-latest
 
@@ -38,30 +38,33 @@ jobs:
           cd backend
           python -m compileall app
 
-      - name: Build Backend Docker
-        run: |
-          docker build -t finsight-backend ./backend
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-
-  frontend-build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          python-version: "3.13"
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install Frontend Dependencies
+      - name: Build Backend Image
         run: |
-          cd frontend/streamlit
-          pip install -r requirements.txt
+          docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/finsight-backend:latest \
+          ./backend
 
-      - name: Build Frontend Docker
+      - name: Build Frontend Image
         run: |
-          docker build -t finsight-frontend ./frontend/streamlit
+          docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/finsight-frontend:latest \
+          ./frontend/streamlit
+
+      - name: Push Backend Image
+        run: |
+          docker push \
+          ${{ secrets.DOCKER_USERNAME }}/finsight-backend:latest
+
+      - name: Push Frontend Image
+        run: |
+          docker push \
+          ${{ secrets.DOCKER_USERNAME }}/finsight-frontend:latest
